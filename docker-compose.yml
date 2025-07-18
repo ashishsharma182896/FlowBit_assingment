@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - GENERIC_TIMEZONE=Asia/Kolkata
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=ashish
+      - N8N_BASIC_AUTH_PASSWORD=strongPassword123 
+      - N8N_USER_MANAGEMENT_DISABLED=true
+      
+    volumes:
+      - n8n_data:/home/node/.n8n
+    restart: always
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always
+
+  backend:
+    build: ./backend     # Path to your backend code (replace if needed)
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=mongodb+srv://sharmaashish20635:8Tgp3nXccppOqdql@cluster0.bosbqtm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+    depends_on:
+      - mongo
+
+volumes:
+  n8n_data:
+  mongo_data:
